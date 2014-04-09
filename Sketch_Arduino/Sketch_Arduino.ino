@@ -53,58 +53,10 @@ void setup() {
 void loop() {
   received = 0;
   error = 0;
+     
+  pushbuttom(); //Função do Pushbuttom
   
-  l1atual = digitalRead(apagador1);
-  l2atual = digitalRead(apagador2);
-  l3atual = digitalRead(apagador3);
-  
-    if (l1atual != l1last) {
-    
-    if (l1atual == 0) {
-      if (digitalRead(lampada1)) {
-        digitalWrite(lampada1, 0);
-        l1last = 0;
-      } else {
-        digitalWrite(lampada1, 1);
-        l1last = 0;
-      }
-    } else {
-      l1last = l1atual;
-    }
-  } 
-  
-  if (l2atual != l2last) {
-    
-    if (l2atual == 0) {
-      if (digitalRead(lampada2)) {
-        digitalWrite(lampada2, 0);
-        l2last = 0;
-      } else {
-        digitalWrite(lampada2, 1);
-        l2last = 0;
-      }
-    } else {
-      l2last = l2atual;
-    }
-  } 
-  
-  if (l3atual != l3last) {
-    
-    if (l3atual == 0) {
-      if (digitalRead(lampada3)) {
-        digitalWrite(lampada3, 0);
-        l3last = 0;
-      } else {
-        digitalWrite(lampada3, 1);
-        l3last = 0;
-      }
-    } else {
-      l3last = l3atual;
-    }
-  } 
-
-  
-  evento();
+  evento(); //Função Comunica Porta Serial
   
   delay(10); //Delay para o sistema funcionar
   
@@ -173,6 +125,58 @@ void writestatus(String code, int name, int value) {
     digitalWrite(name, value);
     error = 1;
     data = "";
+  }  
+}
+
+void pushbuttom() {
+  
+  l1atual = digitalRead(apagador1);
+  l2atual = digitalRead(apagador2);
+  l3atual = digitalRead(apagador3);
+
+  if (l1atual != l1last) {
+    
+    if (l1atual == 0) {
+      if (digitalRead(lampada1)) {
+        digitalWrite(lampada1, 0);
+        l1last = 0;
+      } else {
+        digitalWrite(lampada1, 1);
+        l1last = 0;
+      }
+    } else {
+      l1last = l1atual;
+    }
+  } 
+  
+  if (l2atual != l2last) {
+    
+    if (l2atual == 0) {
+      if (digitalRead(lampada2)) {
+        digitalWrite(lampada2, 0);
+        l2last = 0;
+      } else {
+        digitalWrite(lampada2, 1);
+        l2last = 0;
+      }
+    } else {
+      l2last = l2atual;
+    }
+  } 
+  
+  if (l3atual != l3last) {
+    
+    if (l3atual == 0) {
+      if (digitalRead(lampada3)) {
+        digitalWrite(lampada3, 0);
+        l3last = 0;
+      } else {
+        digitalWrite(lampada3, 1);
+        l3last = 0;
+      }
+    } else {
+      l3last = l3atual;
+    }
   }  
 }
 
