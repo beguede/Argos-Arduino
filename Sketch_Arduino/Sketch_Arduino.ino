@@ -114,7 +114,7 @@ void portas() {
 
 void readstatus(String code, int name) {
   if (data == code) {
-    Serial.print(digitalRead(name));
+    Serial.print(code + digitalRead(name));
     error = 1;
     data = "";
   }
