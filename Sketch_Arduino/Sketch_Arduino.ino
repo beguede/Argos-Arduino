@@ -1,17 +1,18 @@
-int janela1 = 1; // Define ID Janela 1
-int janela2 = 2; // Define ID Janela 2
-int janela3 = 3; // Define ID Janela 3
-int porta1 = 4; // Define ID Porta 1
-int porta2 = 5; // Define ID Porta 2
-int porta3 = 6; // Define ID Porta 3
-int apagador1 = 7; // Define ID Apagador 1
-int apagador2 = 8; // Define ID Apagador 2
-int apagador3 = 9; // Define ID Apagador 3
-int lampada1 = 10; // Define ID Lampada 1
-int lampada2 = 11; // Define ID Lampada 2
-int lampada3 = 12; // Define ID Lampada 3
+int janela1 = 2; // Define ID Janela 1
+int janela2 = 3; // Define ID Janela 2
+int janela3 = 4; // Define ID Janela 3
+int porta1 = 5; // Define ID Porta 1
+int porta2 = 6; // Define ID Porta 2
+int porta3 = 7; // Define ID Porta 3
+int apagador1 = 8; // Define ID Apagador 1
+int apagador2 = 9; // Define ID Apagador 2
+int apagador3 = 10; // Define ID Apagador 3
+int lampada1 = 11; // Define ID Lampada 1
+int lampada2 = 12; // Define ID Lampada 2
+int lampada3 = 13; // Define ID Lampada 3
+int temperatura1 = 0; // Define ID Sensor Temperatura
 
-int sistema = 13; // Define ID Sistema
+//int sistema = 13; // Define ID Sistema
 
 int l1atual = 0; //Status Apagador 1 Atual (PushButom)
 int l2atual = 0; //Status Apagador 2 Atual (PushButom)
@@ -28,6 +29,8 @@ int received = 0; // Valida se dado foi recebido com sucesso
 int cnt = 0; // Conta caracteres a ser recebido
 int error = 0; // Valor Incorreto
 
+float temp;
+
 void setup() {  
   
   pinMode(janela1, INPUT); //Entrada para Janela 1  - j1
@@ -43,11 +46,11 @@ void setup() {
   pinMode(lampada2, OUTPUT); //Saida para Lampada 2 - l2
   pinMode(lampada3, OUTPUT); //Saida para Lampada 3 - l3
   
-  pinMode(sistema, OUTPUT); //Saida Arduino/Manual
+//  pinMode(sistema, OUTPUT); //Saida Arduino/Manual
   
   Serial.begin(9600); //Define velocidade de comunicação
     	
-  digitalWrite(sistema, HIGH); //Seta o Sistema para o modo Arduino.
+//  digitalWrite(sistema, HIGH); //Seta o Sistema para o modo Arduino.
 }
 
 void loop() {
@@ -59,6 +62,8 @@ void loop() {
   evento(); //Função Comunica Porta Serial
   
   delay(10); //Delay para o sistema funcionar
+  
+  //verificatemp(); //Verifica a Temperatura atual
   
   if ((received != 1) && (cnt > 0)) {
     portas();
@@ -86,7 +91,7 @@ void evento() {
 
 void portas() {
   
-  readstatus("status", sistema);
+//  readstatus("status", sistema);
   
   readstatus("l1", lampada1);
   readstatus("l2", lampada2);
@@ -104,6 +109,8 @@ void portas() {
   writestatus("a21", lampada2, 1);
   writestatus("a30", lampada3, 0);
   writestatus("a31", lampada3, 1);
+  
+  readstatusanalog("t1", temperatura1);
   
   if (error == 0) {
     data = "";
@@ -128,13 +135,34 @@ void writestatus(String code, int name, int value) {
   }  
 }
 
+void readstatusanalog(String code, int name) {
+  if (data == code) {
+    //temp = ((5.0 * analogRead(name) * 100.0) / 1024);
+    Serial.print(code + analogRead(name));
+    //Serial.print("-");
+    //Serial.print(temp);
+    error = 1;
+    data = "";
+  }
+}
+
 void pushbuttom() {
   
   l1atual = digitalRead(apagador1);
   l2atual = digitalRead(apagador2);
   l3atual = digitalRead(apagador3);
 
-  if (l1atual != l1last) {
+
+if (l1atual != l1last) {
+  
+  if (digitalRead(lampada1))
+    digitalWrite(lampada1, 0);
+  else
+    digitalWrite(lampada1, 1);
+  
+  l1last = l1atual;
+}
+/*  if (l1atual != l1last) {
     
     if (l1atual == 0) {
       if (digitalRead(lampada1)) {
@@ -148,7 +176,7 @@ void pushbuttom() {
       l1last = l1atual;
     }
   } 
-  
+*/  
   if (l2atual != l2last) {
     
     if (l2atual == 0) {
@@ -180,3 +208,12 @@ void pushbuttom() {
   }  
 }
 
+void verificatemp() {
+  
+    temp = analogRead(temperatura1);
+    temp = temp * 0.48828125; // Cálculo para temperatura em ºC
+    Serial.print("TEMPRATURE = ");
+    Serial.print(temp);
+    Serial.print(" C");
+    Serial.println();
+}
